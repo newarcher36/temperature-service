@@ -1,0 +1,12 @@
+spring:
+  rabbitmq:
+    username: testUser
+    password: testPass
+    host: localhost
+    template:
+      routing-key: temperaturedata
+      exchange: meteodata_exchange
+      default-receive-queue: temperaturedata
+    listener:
+      simple:
+        auto-startup: false

@@ -9,5 +9,4 @@ public class TemperatureServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(TemperatureServiceApplication.class, args);
     }
-
 }
