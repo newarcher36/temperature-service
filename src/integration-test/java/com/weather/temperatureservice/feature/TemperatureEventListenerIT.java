@@ -1,16 +1,14 @@
 package com.weather.temperatureservice.feature;
 
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
-import org.springframework.boot.autoconfigure.amqp.RabbitTemplateConfigurer;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.util.TestPropertyValues;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.testcontainers.containers.RabbitMQContainer;
-import org.testcontainers.containers.wait.strategy.WaitStrategy;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
@@ -19,25 +17,23 @@ import javax.inject.Inject;
 
 @SpringBootTest
 @Testcontainers
+@ActiveProfiles("test")
+@ContextConfiguration(initializers = {TemperatureEventListenerIT.Initializer.class})
 public class TemperatureEventListenerIT {
-
-    @Inject
-    private RabbitProperties rabbitProperties;
 
     @Inject
     private RabbitTemplate rabbitTemplate;
 
     @Container
-    public RabbitMQContainer rabbitMQContainer = new RabbitMQContainer(DockerImageName.parse("rabbitmq:3-management"))
-            .withExchange("meteodata_exchange","direct")
-            .withQueue("temperaturedata")
-            .withUser("testUser", "testPass");
+    private static final RabbitMQContainer rabbitMQContainer = new RabbitMQContainer(DockerImageName.parse("rabbitmq:3-management"));
 
-    @BeforeEach
-    public void init() {
-        Integer mappedPort = rabbitMQContainer.getMappedPort(5672);
-        RabbitTemplateConfigurer rabbitTemplateConfigurer = new RabbitTemplateConfigurer(rabbitProperties);
-        rabbitTemplateConfigurer.configure(rabbitTemplate, new CachingConnectionFactory("localhost", mappedPort));
+    static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+        public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
+            TestPropertyValues.of(
+                    "spring.rabbitmq.host=" + rabbitMQContainer.getHost(),
+                    "spring.rabbitmq.port=" + rabbitMQContainer.getMappedPort(5672)
+            ).applyTo(configurableApplicationContext.getEnvironment());
+        }
     }
 
     @Test void
