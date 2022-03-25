@@ -1,9 +1,12 @@
 spring:
   rabbitmq:
+    listener:
+      simple:
+        default-requeue-rejected: false
     template:
       routing-key: test-temperaturedata
       exchange: test-meteodata_exchange
       default-receive-queue: test-temperaturedata
-    listener:
-      simple:
-        auto-startup: false
+amqp:
+  queue:
+    name: test-temperaturedata

@@ -1,6 +1,7 @@
 package com.weather.temperatureservice.feature;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
@@ -24,20 +25,19 @@ public class TemperatureEventListenerIT {
     @Inject
     private RabbitTemplate rabbitTemplate;
 
-    @Container
-    private static final RabbitMQContainer rabbitMQContainer = new RabbitMQContainer(DockerImageName.parse("rabbitmq:3-management"));
+//    @Container
+//    private static final RabbitMQContainer rabbitMQContainer = new RabbitMQContainer(DockerImageName.parse("rabbitmq:3-management"));
 
     static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
         public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
             TestPropertyValues.of(
-                    "spring.rabbitmq.host=" + rabbitMQContainer.getHost(),
-                    "spring.rabbitmq.port=" + rabbitMQContainer.getMappedPort(5672)
+                    "spring.rabbitmq.port=" + 5672
             ).applyTo(configurableApplicationContext.getEnvironment());
         }
     }
 
     @Test void
     receiveTemperatureData() {
-        rabbitTemplate.convertAndSend("{ val: 123 }");
+        rabbitTemplate.convertAndSend("{ meteoDataId: {}, temperatureValue : 20 }");
     }
 }
