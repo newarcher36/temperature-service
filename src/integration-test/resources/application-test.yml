@@ -1,4 +1,15 @@
 spring:
+  datasource:
+    username: postgres
+    password: postgres
+    schema
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   rabbitmq:
     listener:
       simple:
@@ -8,5 +19,5 @@ spring:
       exchange: test-meteodata_exchange
       default-receive-queue: test-temperaturedata
 amqp:
-  queue:
-    name: test-temperaturedata
+  queue: test-temperaturedata
+  dlq: test-temperaturedata.dlq

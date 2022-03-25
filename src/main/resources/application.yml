@@ -1,16 +1,12 @@
-#server:
-#  port: 8091
-#spring:
-#  rabbitmq:
-#    listener:
-#      simple:
-#        retry:
-#          enabled: true
-#          initial-interval: 3s
-#          max-attempts: 3
-#        default-requeue-rejected: false
-#    host: localhost
-#    port: 5672
-#amqp:
-#  queue:
-#    name: temperaturedata
+server:
+  port: 8091
+spring:
+  rabbitmq:
+    listener:
+      simple:
+        default-requeue-rejected: false
+    host: localhost
+    port: 5672
+amqp:
+  queue: temperaturedata
+  dlq: temperaturedata.dlq
