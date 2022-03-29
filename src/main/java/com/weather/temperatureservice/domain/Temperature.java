@@ -1,5 +1,4 @@
-package com.weather.temperatureservice.infrastructure.amqp.event;
-
+package com.weather.temperatureservice.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +9,7 @@ import lombok.ToString;
 @Getter
 @AllArgsConstructor
 @ToString
-public class TemperatureDataEvent {
+public class Temperature {
     private Long meteoDataId;
     private Float temperatureValue;
 }
