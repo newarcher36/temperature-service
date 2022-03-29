@@ -14,6 +14,5 @@ public class TemperatureDataEventListener {
     @RabbitListener(queues = "${amqp.queue}")
     public void listenTemperatureDataEvents(Message message) {
         LOGGER.info("TemperatureDataEvent received : " + message);
-        throw new IllegalArgumentException("AIAIAIAIII!");
     }
 }
