@@ -1,6 +1,19 @@
 server:
   port: 8091
 spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/postgres
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        default_schema: temperature
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   rabbitmq:
     listener:
       simple:
@@ -8,5 +21,6 @@ spring:
     host: localhost
     port: 5672
 amqp:
-  queue: save-temperature
-  dlq: temperature.dlq
+  default-queue: save-temperature
+  reply-queue: save-temperature-reply
+  dlq: save-temperature-dlq

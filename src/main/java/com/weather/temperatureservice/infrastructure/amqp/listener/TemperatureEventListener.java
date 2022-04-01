@@ -18,7 +18,7 @@ public class TemperatureEventListener {
         this.saveTemperature = saveTemperature;
     }
 
-    @RabbitListener(queues = "${amqp.queue}")
+    @RabbitListener(queues = "${amqp.default-queue}")
     public void listenTemperatureDataEvents(TemperatureDataEvent temperatureDataEvent) {
         LOGGER.info("TemperatureDataEvent received : " + temperatureDataEvent);
         saveTemperature.save(map(temperatureDataEvent));

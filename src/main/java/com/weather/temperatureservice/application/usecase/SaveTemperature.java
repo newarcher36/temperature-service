@@ -4,6 +4,7 @@ import com.weather.temperatureservice.domain.Temperature;
 import com.weather.temperatureservice.infrastructure.repository.TemperatureRepository;
 import com.weather.temperatureservice.infrastructure.repository.entity.TemperatureEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class SaveTemperature {
@@ -14,6 +15,7 @@ public class SaveTemperature {
         this.temperatureRepository = temperatureRepository;
     }
 
+    @Transactional
     public void save(Temperature temperature) {
         temperatureRepository.save(map(temperature));
     }
