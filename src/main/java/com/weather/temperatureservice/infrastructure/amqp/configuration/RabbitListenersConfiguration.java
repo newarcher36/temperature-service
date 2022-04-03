@@ -22,6 +22,7 @@ public class RabbitListenersConfiguration {
         factory.setMessageConverter(listenerJackson2MessageConverter());
         factory.setConcurrentConsumers(1);
         factory.setMaxConcurrentConsumers(1);
+        factory.setDefaultRequeueRejected(false);
         return factory;
     }
 }

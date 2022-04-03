@@ -1,6 +1,6 @@
 package com.weather.temperatureservice.infrastructure.amqp;
 
-import com.weather.temperatureservice.infrastructure.amqp.event.TemperatureDataEvent;
+import com.weather.temperatureservice.infrastructure.amqp.event.SaveTemperatureDataEvent;
 import com.weather.temperatureservice.infrastructure.repository.TemperatureRepository;
 import com.weather.temperatureservice.infrastructure.repository.entity.TemperatureEntity;
 import org.junit.jupiter.api.Test;
@@ -36,21 +36,21 @@ public class SaveTemperatureEventIT {
     @Inject
     private TemperatureRepository temperatureRepository;
 
-    private static final String TEST_QUEUE = "test-queue";
-    private static final String TEST_REPLY_QUEUE = "test-reply-queue";
-    private static final String TEST_EXCHANGE = "test-exchange";
-    private static final String TEST_ROUTING_KEY = "test-rk-queue";
+    private static final String SAVE_TEMPERATURE_QUEUE = "save-temperaure-queue";
+    private static final String GET_TEMPERATURE_QUEUE = "get-temperature";
+    private static final String TEMPERATURE_EXCHANGE = "temperature-exchange";
+    private static final String TEMPERATURE_ROUTING_KEY = "temperature-rk-queue";
     private static final String EXCHANGE_TYPE_DIRECT = "direct";
     private static final String DESTINATION_TYPE = "queue";
-    private static final String DATABASE_NAME = "temperature-db";
     private static final String USERNAME = "postgres";
     private static final String PASSWORD = "postgres";
 
     @Container
     private final static RabbitMQContainer rabbitMQContainer = new RabbitMQContainer(DockerImageName.parse("rabbitmq:3-management"))
-            .withExchange(TEST_EXCHANGE, EXCHANGE_TYPE_DIRECT)
-            .withQueue(TEST_QUEUE)
-            .withBinding(TEST_EXCHANGE, TEST_QUEUE, Collections.emptyMap(), TEST_ROUTING_KEY, DESTINATION_TYPE);
+            .withExchange(TEMPERATURE_EXCHANGE, EXCHANGE_TYPE_DIRECT)
+            .withQueue(SAVE_TEMPERATURE_QUEUE)
+            .withQueue(GET_TEMPERATURE_QUEUE)
+            .withBinding(TEMPERATURE_EXCHANGE, SAVE_TEMPERATURE_QUEUE, Collections.emptyMap(), TEMPERATURE_ROUTING_KEY, DESTINATION_TYPE);
 
     @Container
     public final static PostgreSQLContainer<?> postgresSQLContainer = new PostgreSQLContainer<>("postgres:12")
@@ -64,22 +64,21 @@ public class SaveTemperatureEventIT {
                     "spring.datasource.username=" + postgresSQLContainer.getUsername(),
                     "spring.datasource.password=" + postgresSQLContainer.getPassword(),
                     "spring.datasource.url=" + postgresSQLContainer.getJdbcUrl(),
-                    "amqp.default-queue=" + TEST_QUEUE,
-                    "amqp.reply-queue=" + TEST_REPLY_QUEUE
+                    "amqp.save-temperature-queue=" + SAVE_TEMPERATURE_QUEUE
             ).applyTo(configurableApplicationContext.getEnvironment());
         }
     }
 
     @Test void
-    receiveTemperatureData() {
-        rabbitTemplate.convertAndSend(TEST_EXCHANGE, TEST_ROUTING_KEY, aTemperatureDataEvent());
+    saveTemperatureData() {
+        rabbitTemplate.convertAndSend(TEMPERATURE_EXCHANGE, TEMPERATURE_ROUTING_KEY, aTemperatureDataEvent());
         TemperatureEntity temperatureEntity = temperatureRepository.findById(1L);
         assertThat(temperatureEntity).isNotNull()
                 .extracting(TemperatureEntity::getId, TemperatureEntity::getTemperatureValue, TemperatureEntity::getMeteoDataId)
                 .containsExactly(1L, 23f, 1L);
     }
 
-    private TemperatureDataEvent aTemperatureDataEvent() {
-        return TemperatureDataEvent.builder().withMeteoDataId(1L).withTemperatureValue(23f).build();
+    private SaveTemperatureDataEvent aTemperatureDataEvent() {
+        return SaveTemperatureDataEvent.builder().withMeteoDataId(1L).withTemperatureValue(23f).build();
     }
 }

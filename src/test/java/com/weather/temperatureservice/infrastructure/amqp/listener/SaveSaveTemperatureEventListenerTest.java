@@ -2,7 +2,7 @@ package com.weather.temperatureservice.infrastructure.amqp.listener;
 
 import com.weather.temperatureservice.application.usecase.SaveTemperature;
 import com.weather.temperatureservice.domain.Temperature;
-import com.weather.temperatureservice.infrastructure.amqp.event.TemperatureDataEvent;
+import com.weather.temperatureservice.infrastructure.amqp.event.SaveTemperatureDataEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.verify;
 import static org.mockito.MockitoAnnotations.openMocks;
 
-public class TemperatureEventListenerTest {
+public class SaveSaveTemperatureEventListenerTest {
 
     @Mock
     private SaveTemperature saveTemperature;
@@ -28,10 +28,10 @@ public class TemperatureEventListenerTest {
 
     @Test void
     saveTemperatureData() {
-        TemperatureEventListener temperatureEventListener = new TemperatureEventListener(saveTemperature);
-        TemperatureDataEvent temperatureDataEvent = TemperatureDataEvent.builder().withMeteoDataId(1L).withTemperatureValue(23f).build();
+        SaveTemperatureEventListener saveTemperatureEventListener = new SaveTemperatureEventListener(saveTemperature);
+        SaveTemperatureDataEvent saveTemperatureDataEvent = SaveTemperatureDataEvent.builder().withMeteoDataId(1L).withTemperatureValue(23f).build();
 
-        temperatureEventListener.listenTemperatureDataEvents(temperatureDataEvent);
+        saveTemperatureEventListener.listenTemperatureDataEvents(saveTemperatureDataEvent);
 
 
         verify(saveTemperature).save(temperatureCaptor.capture());

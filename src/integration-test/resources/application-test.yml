@@ -13,3 +13,6 @@ spring:
     listener:
       simple:
         default-requeue-rejected: false
+amqp:
+  save-temperature-queue: save-temperature
+  get-temperature-statistics-queue: get-temperature

@@ -14,7 +14,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class TemperatureDataEvent implements Serializable {
-    private Long meteoDataId;
-    private Float temperatureValue;
+public class TemperatureStatisticsEvent implements Serializable {
+    private Float currentTemperature;
+    private Float avgTemperature;
+    private Float maxTemperature;
+    private Float minTemperature;
 }

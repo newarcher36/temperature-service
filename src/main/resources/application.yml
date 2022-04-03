@@ -15,12 +15,8 @@ spring:
         default_schema: temperature
         dialect: org.hibernate.dialect.PostgreSQLDialect
   rabbitmq:
-    listener:
-      simple:
-        default-requeue-rejected: false
     host: localhost
     port: 5672
 amqp:
-  default-queue: save-temperature
-  reply-queue: save-temperature-reply
-  dlq: save-temperature-dlq
+  save-temperature-queue: save-temperature
+  get-temperature-statistics-queue: get-temperature
