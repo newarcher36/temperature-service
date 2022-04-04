@@ -36,8 +36,8 @@ public class SaveTemperatureEventIT {
     @Inject
     private TemperatureRepository temperatureRepository;
 
-    private static final String SAVE_TEMPERATURE_QUEUE = "save-temperaure-queue";
-    private static final String GET_TEMPERATURE_QUEUE = "get-temperature";
+    private static final String SAVE_TEMPERATURE_QUEUE = "save-temperature-queue";
+    private static final String GET_TEMPERATURE_STATISTICS_QUEUE = "get-temperature-statistics";
     private static final String TEMPERATURE_EXCHANGE = "temperature-exchange";
     private static final String TEMPERATURE_ROUTING_KEY = "temperature-rk-queue";
     private static final String EXCHANGE_TYPE_DIRECT = "direct";
@@ -49,7 +49,7 @@ public class SaveTemperatureEventIT {
     private final static RabbitMQContainer rabbitMQContainer = new RabbitMQContainer(DockerImageName.parse("rabbitmq:3-management"))
             .withExchange(TEMPERATURE_EXCHANGE, EXCHANGE_TYPE_DIRECT)
             .withQueue(SAVE_TEMPERATURE_QUEUE)
-            .withQueue(GET_TEMPERATURE_QUEUE)
+            .withQueue(GET_TEMPERATURE_STATISTICS_QUEUE)
             .withBinding(TEMPERATURE_EXCHANGE, SAVE_TEMPERATURE_QUEUE, Collections.emptyMap(), TEMPERATURE_ROUTING_KEY, DESTINATION_TYPE);
 
     @Container
@@ -64,6 +64,7 @@ public class SaveTemperatureEventIT {
                     "spring.datasource.username=" + postgresSQLContainer.getUsername(),
                     "spring.datasource.password=" + postgresSQLContainer.getPassword(),
                     "spring.datasource.url=" + postgresSQLContainer.getJdbcUrl(),
+                    "amqp.get-temperature-statistics-queue=" + GET_TEMPERATURE_STATISTICS_QUEUE,
                     "amqp.save-temperature-queue=" + SAVE_TEMPERATURE_QUEUE
             ).applyTo(configurableApplicationContext.getEnvironment());
         }
@@ -73,12 +74,16 @@ public class SaveTemperatureEventIT {
     saveTemperatureData() {
         rabbitTemplate.convertAndSend(TEMPERATURE_EXCHANGE, TEMPERATURE_ROUTING_KEY, aTemperatureDataEvent());
         TemperatureEntity temperatureEntity = temperatureRepository.findById(1L);
+
         assertThat(temperatureEntity).isNotNull()
                 .extracting(TemperatureEntity::getId, TemperatureEntity::getTemperatureValue, TemperatureEntity::getMeteoDataId)
                 .containsExactly(1L, 23f, 1L);
     }
 
     private SaveTemperatureDataEvent aTemperatureDataEvent() {
-        return SaveTemperatureDataEvent.builder().withMeteoDataId(1L).withTemperatureValue(23f).build();
+        return SaveTemperatureDataEvent.builder()
+                .withMeteoDataId(1L)
+                .withTemperatureValue(23f)
+                .build();
     }
 }

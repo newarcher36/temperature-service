@@ -10,12 +10,12 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GetTemperatureDataEventListener {
+public class GetTemperatureStatisticsEventListener {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GetTemperatureDataEventListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GetTemperatureStatisticsEventListener.class);
     private final GetTemperatureStatistics getTemperatureStatistics;
 
-    public GetTemperatureDataEventListener(GetTemperatureStatistics getTemperatureStatistics) {
+    public GetTemperatureStatisticsEventListener(GetTemperatureStatistics getTemperatureStatistics) {
         this.getTemperatureStatistics = getTemperatureStatistics;
     }
 

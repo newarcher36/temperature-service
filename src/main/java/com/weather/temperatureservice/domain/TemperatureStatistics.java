@@ -3,6 +3,7 @@ package com.weather.temperatureservice.domain;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Builder(setterPrefix = "with")

@@ -38,7 +38,7 @@ public class GetTemperatureEventListenerTest {
                 .withMeteoDataIds(new Long[]{1L,2L})
                 .build();
 
-        TemperatureStatisticsEvent actualTemperatureStatisticsEvent = new GetTemperatureDataEventListener(getTemperatureStatistics).onMessage(getTemperatureStatisticsEvent);
+        TemperatureStatisticsEvent actualTemperatureStatisticsEvent = new GetTemperatureStatisticsEventListener(getTemperatureStatistics).onMessage(getTemperatureStatisticsEvent);
 
         assertThat(actualTemperatureStatisticsEvent)
                 .usingRecursiveComparison()

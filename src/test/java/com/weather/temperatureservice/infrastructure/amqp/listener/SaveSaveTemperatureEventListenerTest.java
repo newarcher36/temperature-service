@@ -31,7 +31,7 @@ public class SaveSaveTemperatureEventListenerTest {
         SaveTemperatureEventListener saveTemperatureEventListener = new SaveTemperatureEventListener(saveTemperature);
         SaveTemperatureDataEvent saveTemperatureDataEvent = SaveTemperatureDataEvent.builder().withMeteoDataId(1L).withTemperatureValue(23f).build();
 
-        saveTemperatureEventListener.listenTemperatureDataEvents(saveTemperatureDataEvent);
+        saveTemperatureEventListener.onMessage(saveTemperatureDataEvent);
 
 
         verify(saveTemperature).save(temperatureCaptor.capture());

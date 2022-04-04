@@ -38,13 +38,15 @@ public class TemperatureRepository {
         String temperatureStatisticsQuery = "select max(t.temperatureValue) as maxTemperature, " +
                 "min(t.temperatureValue) as minTemperature, " +
                 "trunc(avg(t.temperatureValue)) as avgTemperature " +
-                "from TemperatureEntity t where t.meteoDataId in :ids";
-       Object[] temperatureStatistics = entityManager.createQuery(temperatureStatisticsQuery, Object[].class).setParameter("ids", asList(meteoDataIds)).getSingleResult();
-       return TemperatureStatistics.builder()
-                .withCurrentTemperature(curren  tTemperature)
+                "from TemperatureEntity t " +
+                "where t.meteoDataId in :ids";
+        Object[] temperatureStatistics = entityManager.createQuery(temperatureStatisticsQuery, Object[].class).setParameter("ids", asList(meteoDataIds)).getSingleResult();
+
+        return TemperatureStatistics.builder()
+                .withCurrentTemperature(currentTemperature)
                 .withMaxTemperature((Float) temperatureStatistics[0])
                 .withMinTemperature((Float) temperatureStatistics[1])
-                .withAvgTemperature(((Number)temperatureStatistics[2]).floatValue())
+                .withAvgTemperature(((Number) temperatureStatistics[2]).floatValue())
                 .build();
     }
 
