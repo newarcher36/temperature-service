@@ -7,9 +7,10 @@ import com.weather.temperatureservice.infrastructure.amqp.event.TemperatureStati
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.stereotype.Component;
 
-@Component
+import javax.inject.Named;
+
+@Named
 public class GetTemperatureStatisticsEventListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GetTemperatureStatisticsEventListener.class);

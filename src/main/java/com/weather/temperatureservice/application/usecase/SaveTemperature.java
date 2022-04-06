@@ -3,10 +3,11 @@ package com.weather.temperatureservice.application.usecase;
 import com.weather.temperatureservice.domain.Temperature;
 import com.weather.temperatureservice.infrastructure.repository.TemperatureRepository;
 import com.weather.temperatureservice.infrastructure.repository.entity.TemperatureEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@Component
+import javax.inject.Named;
+
+@Named
 public class SaveTemperature {
 
     private final TemperatureRepository temperatureRepository;

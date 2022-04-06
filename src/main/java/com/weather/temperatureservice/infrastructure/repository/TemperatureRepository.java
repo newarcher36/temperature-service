@@ -4,13 +4,13 @@ import com.weather.temperatureservice.domain.TemperatureStatistics;
 import com.weather.temperatureservice.infrastructure.repository.entity.TemperatureEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
 
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 
 import static java.util.Arrays.asList;
 
-@Repository
+@Named
 public class TemperatureRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TemperatureRepository.class);
