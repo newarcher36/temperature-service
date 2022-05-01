@@ -21,7 +21,7 @@ pipeline {
         }
         stage("build-test_meteo-station") {
             steps {
-                sh 'echo "Compiling and launching unit (and in future also integration test)"'
+                sh 'echo "Compiling and launching unit and integration tests"'
                 sh 'mvn clean install'
             }
             post {
@@ -35,14 +35,14 @@ pipeline {
             steps {
                 sh 'pwd'
                 sh 'echo "Building docker image of temperature-service"'
-                sh 'docker build -t newarcher/temperature-service:latest .'
+                sh 'docker build -t newarcher/temperature-service:v1 .'
             }
         }
         stage("publish-docker-image") {
             steps {
-                sh 'echo "Pushing image newarcher/temperature-service:latest to docker hub"'
+                sh 'echo "Pushing image newarcher/temperature-service to docker hub"'
                 sh 'docker login -u newarcher -p $DOCKER_HUB_PASS'
-                sh 'docker push newarcher/temperature-service:latest'
+                sh 'docker push newarcher/temperature-service:v1'
                 sh 'docker logout'
                 sh 'echo "done!"'
             }
