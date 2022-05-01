@@ -2,10 +2,10 @@ server:
   port: 8091
 spring:
   datasource:
+    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABAE}
     driver-class-name: org.postgresql.Driver
-    username: postgres
+    username: ${PGUSER}
     password: ${POSTGRES_PASSWORD}
-    url: jdbc:postgresql://localhost:5432/postgres
   jpa:
     hibernate:
       ddl-auto: none
@@ -15,8 +15,8 @@ spring:
         default_schema: meteodata
         dialect: org.hibernate.dialect.PostgreSQLDialect
   rabbitmq:
-    host: localhost
-    port: 5672
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
 amqp:
   save-temperature-queue: save-temperature
   get-temperature-statistics-queue: get-temperature
