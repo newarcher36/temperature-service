@@ -60,6 +60,7 @@ public class SaveTemperatureEventIT {
     static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
         public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
             TestPropertyValues.of(
+                    "spring.rabbitmq.host=" + rabbitMQContainer.getHost(),
                     "spring.rabbitmq.port=" + rabbitMQContainer.getMappedPort(5672),
                     "spring.datasource.username=" + postgresSQLContainer.getUsername(),
                     "spring.datasource.password=" + postgresSQLContainer.getPassword(),
