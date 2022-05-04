@@ -2,7 +2,6 @@ package com.weather.temperatureservice.application.usecase;
 
 import com.weather.temperatureservice.domain.Temperature;
 import com.weather.temperatureservice.infrastructure.repository.TemperatureRepository;
-import com.weather.temperatureservice.infrastructure.repository.entity.TemperatureEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Named;
@@ -17,14 +16,7 @@ public class SaveTemperature {
     }
 
     @Transactional
-    public void save(Temperature temperature) {
-        temperatureRepository.save(map(temperature));
-    }
-
-    private TemperatureEntity map(Temperature temperature) {
-        return TemperatureEntity.builder()
-                .withMeteoDataId(temperature.getMeteoDataId())
-                .withTemperatureValue(temperature.getTemperatureValue())
-                .build();
+    public Temperature save(Temperature temperature) {
+        return temperatureRepository.save(temperature);
     }
 }

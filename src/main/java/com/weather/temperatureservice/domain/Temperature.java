@@ -10,6 +10,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class Temperature {
+    private Long id;
     private Long meteoDataId;
     private Float temperatureValue;
 }

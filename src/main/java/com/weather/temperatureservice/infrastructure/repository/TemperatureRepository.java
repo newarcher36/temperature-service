@@ -1,5 +1,6 @@
 package com.weather.temperatureservice.infrastructure.repository;
 
+import com.weather.temperatureservice.domain.Temperature;
 import com.weather.temperatureservice.domain.TemperatureStatistics;
 import com.weather.temperatureservice.infrastructure.repository.entity.TemperatureEntity;
 import org.slf4j.Logger;
@@ -50,8 +51,23 @@ public class TemperatureRepository {
                 .build();
     }
 
-    public void save(TemperatureEntity temperatureEntity) {
-        LOGGER.info("Saving new temperature data {}", temperatureEntity);
-        entityManager.persist(temperatureEntity);
+    public Temperature save(Temperature temperature) {
+        LOGGER.info("Saving new temperature data {}", temperature);
+        TemperatureEntity temperatureEntity = mapToTemperatureEntity(temperature);
+        return mapToTemperature(entityManager.merge(temperatureEntity));
+    }
+    private TemperatureEntity mapToTemperatureEntity(Temperature temperature) {
+        return TemperatureEntity.builder()
+                .withMeteoDataId(temperature.getMeteoDataId())
+                .withTemperatureValue(temperature.getTemperatureValue())
+                .build();
+    }
+
+    private Temperature mapToTemperature(TemperatureEntity temperatureEntity) {
+        return Temperature.builder()
+                .withId(temperatureEntity.getId())
+                .withMeteoDataId(temperatureEntity.getMeteoDataId())
+                .withTemperatureValue(temperatureEntity.getTemperatureValue())
+                .build();
     }
 }
