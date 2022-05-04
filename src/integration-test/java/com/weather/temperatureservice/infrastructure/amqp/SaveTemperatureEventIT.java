@@ -1,14 +1,15 @@
 package com.weather.temperatureservice.infrastructure.amqp;
 
+import com.weather.temperatureservice.domain.Temperature;
 import com.weather.temperatureservice.infrastructure.amqp.event.SaveTemperatureDataEvent;
 import com.weather.temperatureservice.infrastructure.repository.TemperatureRepository;
-import com.weather.temperatureservice.infrastructure.repository.entity.TemperatureEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -73,15 +74,15 @@ public class SaveTemperatureEventIT {
 
     @Test void
     saveTemperatureData() {
-        rabbitTemplate.convertAndSend(TEMPERATURE_EXCHANGE, TEMPERATURE_ROUTING_KEY, aTemperatureDataEvent());
-        TemperatureEntity temperatureEntity = temperatureRepository.findById(1L);
+        Temperature savedTemperature = rabbitTemplate.convertSendAndReceiveAsType(TEMPERATURE_EXCHANGE, TEMPERATURE_ROUTING_KEY, aSaveTemperatureDataEvent(), new ParameterizedTypeReference<Temperature>() {});
 
-        assertThat(temperatureEntity).isNotNull()
-                .extracting(TemperatureEntity::getId, TemperatureEntity::getTemperatureValue, TemperatureEntity::getMeteoDataId)
-                .containsExactly(1L, 23f, 1L);
+        assertThat(savedTemperature)
+                .isNotNull()
+                .extracting(Temperature::getId, Temperature::getMeteoDataId, Temperature::getTemperatureValue)
+                .containsExactly(1L, 1L, 23f);
     }
 
-    private SaveTemperatureDataEvent aTemperatureDataEvent() {
+    private SaveTemperatureDataEvent aSaveTemperatureDataEvent() {
         return SaveTemperatureDataEvent.builder()
                 .withMeteoDataId(1L)
                 .withTemperatureValue(23f)
