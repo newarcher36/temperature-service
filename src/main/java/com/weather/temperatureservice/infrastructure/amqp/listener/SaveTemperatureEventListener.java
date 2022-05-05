@@ -24,7 +24,9 @@ public class SaveTemperatureEventListener {
     public TemperatureDataSavedEvent onMessage(SaveTemperatureDataEvent saveTemperatureDataEvent) {
         LOGGER.info("SaveTemperatureDataEvent received : " + saveTemperatureDataEvent);
         Temperature temperature = mapToTemperature(saveTemperatureDataEvent);
-        return mapToTemperatureDataSavedEvent(saveTemperature.save(temperature));
+        TemperatureDataSavedEvent temperatureDataSavedEvent = mapToTemperatureDataSavedEvent(saveTemperature.save(temperature));
+        LOGGER.info("TemperatureDataSavedEvent response is : " + temperatureDataSavedEvent);
+        return temperatureDataSavedEvent;
     }
 
     private TemperatureDataSavedEvent mapToTemperatureDataSavedEvent(Temperature temperature) {
