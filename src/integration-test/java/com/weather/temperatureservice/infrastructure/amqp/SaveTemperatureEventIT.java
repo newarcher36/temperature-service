@@ -1,8 +1,7 @@
 package com.weather.temperatureservice.infrastructure.amqp;
 
-import com.weather.temperatureservice.domain.Temperature;
 import com.weather.temperatureservice.infrastructure.amqp.event.SaveTemperatureDataEvent;
-import com.weather.temperatureservice.infrastructure.repository.TemperatureRepository;
+import com.weather.temperatureservice.infrastructure.amqp.event.TemperatureDataSavedEvent;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,9 +32,6 @@ public class SaveTemperatureEventIT {
 
     @Inject
     private RabbitTemplate rabbitTemplate;
-
-    @Inject
-    private TemperatureRepository temperatureRepository;
 
     private static final String SAVE_TEMPERATURE_QUEUE = "save-temperature-queue";
     private static final String GET_TEMPERATURE_STATISTICS_QUEUE = "get-temperature-statistics";
@@ -74,11 +70,11 @@ public class SaveTemperatureEventIT {
 
     @Test void
     saveTemperatureData() {
-        Temperature savedTemperature = rabbitTemplate.convertSendAndReceiveAsType(TEMPERATURE_EXCHANGE, TEMPERATURE_ROUTING_KEY, aSaveTemperatureDataEvent(), new ParameterizedTypeReference<Temperature>() {});
+        TemperatureDataSavedEvent temperatureDataSavedEvent = rabbitTemplate.convertSendAndReceiveAsType(TEMPERATURE_EXCHANGE, TEMPERATURE_ROUTING_KEY, aSaveTemperatureDataEvent(), new ParameterizedTypeReference<TemperatureDataSavedEvent>() {});
 
-        assertThat(savedTemperature)
+        assertThat(temperatureDataSavedEvent)
                 .isNotNull()
-                .extracting(Temperature::getId, Temperature::getMeteoDataId, Temperature::getTemperatureValue)
+                .extracting(TemperatureDataSavedEvent::getId, TemperatureDataSavedEvent::getMeteoDataId, TemperatureDataSavedEvent::getTemperatureValue)
                 .containsExactly(1L, 1L, 23f);
     }
 

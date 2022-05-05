@@ -3,6 +3,7 @@ package com.weather.temperatureservice.infrastructure.amqp.listener;
 import com.weather.temperatureservice.application.usecase.SaveTemperature;
 import com.weather.temperatureservice.domain.Temperature;
 import com.weather.temperatureservice.infrastructure.amqp.event.SaveTemperatureDataEvent;
+import com.weather.temperatureservice.infrastructure.amqp.event.TemperatureDataSavedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -20,12 +21,21 @@ public class SaveTemperatureEventListener {
     }
 
     @RabbitListener(queues = "${amqp.save-temperature-queue}")
-    public Temperature onMessage(SaveTemperatureDataEvent saveTemperatureDataEvent) {
+    public TemperatureDataSavedEvent onMessage(SaveTemperatureDataEvent saveTemperatureDataEvent) {
         LOGGER.info("SaveTemperatureDataEvent received : " + saveTemperatureDataEvent);
-        return saveTemperature.save(map(saveTemperatureDataEvent));
+        Temperature temperature = mapToTemperature(saveTemperatureDataEvent);
+        return mapToTemperatureDataSavedEvent(saveTemperature.save(temperature));
     }
 
-    private Temperature map(SaveTemperatureDataEvent saveTemperatureDataEvent) {
+    private TemperatureDataSavedEvent mapToTemperatureDataSavedEvent(Temperature temperature) {
+        return TemperatureDataSavedEvent.builder()
+                .withId(temperature.getId())
+                .withMeteoDataId(temperature.getMeteoDataId())
+                .withTemperatureValue(temperature.getTemperatureValue())
+                .build();
+    }
+
+    private Temperature mapToTemperature(SaveTemperatureDataEvent saveTemperatureDataEvent) {
         return Temperature.builder().withMeteoDataId(saveTemperatureDataEvent.getMeteoDataId())
                 .withTemperatureValue(saveTemperatureDataEvent.getTemperatureValue())
                 .build();

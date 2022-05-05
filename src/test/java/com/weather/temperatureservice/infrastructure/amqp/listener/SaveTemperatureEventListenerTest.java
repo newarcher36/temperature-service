@@ -3,6 +3,7 @@ package com.weather.temperatureservice.infrastructure.amqp.listener;
 import com.weather.temperatureservice.application.usecase.SaveTemperature;
 import com.weather.temperatureservice.domain.Temperature;
 import com.weather.temperatureservice.infrastructure.amqp.event.SaveTemperatureDataEvent;
+import com.weather.temperatureservice.infrastructure.amqp.event.TemperatureDataSavedEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -45,13 +46,16 @@ public class SaveTemperatureEventListenerTest {
                 .withMeteoDataId(1L)
                 .withTemperatureValue(23f)
                 .build();
-        Temperature actualSavedTemperature = saveTemperatureEventListener.onMessage(saveTemperatureDataEvent);
+        TemperatureDataSavedEvent temperatureDataSavedEvent = saveTemperatureEventListener.onMessage(saveTemperatureDataEvent);
 
         verify(saveTemperature).save(temperatureCaptor.capture());
 
         assertThat(temperatureCaptor.getValue())
                 .extracting(Temperature::getMeteoDataId, Temperature::getTemperatureValue)
                 .containsExactly(1L, 23f);
-        assertThat(actualSavedTemperature).isEqualTo(expectedSavedTemperature);
+        assertThat(temperatureDataSavedEvent)
+                .isNotNull()
+                .extracting(TemperatureDataSavedEvent::getId, TemperatureDataSavedEvent::getMeteoDataId, TemperatureDataSavedEvent::getTemperatureValue)
+                .containsExactly(1L, 1L ,23f);
     }
 }
